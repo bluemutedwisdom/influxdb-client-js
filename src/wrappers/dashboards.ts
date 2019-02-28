@@ -1,4 +1,8 @@
-import { Cell, CellsApi, Dashboard, DashboardsApi, Label, ProtosApi, View } from "../api";
+import { Cell, CellsApi, Dashboard as APIDashboard, DashboardsApi, Label, ProtosApi, View } from "../api";
+
+import {LabeledResource} from "./labels";
+
+type Dashboard = LabeledResource<APIDashboard>;
 
 export default class {
   private service: DashboardsApi;
@@ -14,32 +18,32 @@ export default class {
   public async get(id: string): Promise<Dashboard> {
     const {data} = await this.service.dashboardsDashboardIDGet(id);
 
-    return data;
+    return data as Dashboard;
   }
 
   public async getAll(): Promise<Dashboard[]> {
     const {data} = await this.service.dashboardsGet(undefined);
 
-    return data.dashboards || [];
+    return data.dashboards as Dashboard[]  || [];
   }
 
   public async getAllByOrg(org: string): Promise<Dashboard[]> {
     const {data} = await this.service.dashboardsGet(org);
 
-    return data.dashboards || [];
+    return data.dashboards as Dashboard[] || [];
   }
 
   public async create(props: Dashboard): Promise<Dashboard> {
     const {data} = await this.service.dashboardsPost(props);
 
-    return data;
+    return data as Dashboard;
   }
 
   public async update(id: string, props: Partial<Dashboard>): Promise<Dashboard> {
     const original = await this.get(id);
     const {data} = await this.service.dashboardsDashboardIDPatch(id, {...original, ...props});
 
-    return data;
+    return data as Dashboard;
   }
 
   public async delete(id: string): Promise<Response> {
@@ -57,7 +61,7 @@ export default class {
 
     const { data } = await this.protosService.protosProtoIDDashboardsPost(protoID, request);
 
-    return data.dashboards || [];
+    return data.dashboards as Dashboard[] || [];
   }
 
   public async deleteCell(dashboardID: string, cellID: string): Promise<Response> {

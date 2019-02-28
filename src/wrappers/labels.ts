@@ -18,6 +18,8 @@ export const addLabelDefaults = (l: APILabel): Label => ({
 
 export type Label = APILabel & {properties: ILabelProperties};
 
+export type LabeledResource<R extends {labels?: APILabel[]}> = Exclude<R, "labels"> & {labels?: Label[]};
+
 export default class {
   private service: LabelsApi;
 
