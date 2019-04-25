@@ -1289,7 +1289,7 @@ export interface TelegrafRequest {
     description?: string;
     agent?: TelegrafRequestAgent;
     plugins?: Array<TelegrafRequestPlugin>;
-    organizationID?: string;
+    orgID?: string;
 }
 export interface TelegrafRequestAgent {
     collectionInterval?: number;

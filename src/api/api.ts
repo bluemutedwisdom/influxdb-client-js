@@ -5613,7 +5613,7 @@ export interface TelegrafRequest {
      * @type {string}
      * @memberof TelegrafRequest
      */
-    organizationID?: string;
+    orgID?: string;
 }
 
 /**
