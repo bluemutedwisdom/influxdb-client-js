@@ -21,7 +21,7 @@ export default function(
   const xhr = new XMLHttpRequest()
   let rowCountIndex = 0
   let row = ''
-  let interval: any = null
+  let timer: any = null
 
   const handleData = (): void => {
     for (let i = rowCountIndex; i < xhr.responseText.length; i++) {
@@ -31,12 +31,14 @@ export default function(
         row = ''
       }
     }
+
+    timer = setTimeout(handleData, CHECK_LIMIT_INTERVAL)
   }
 
   const handleError = () => {
     let bodyError = null
 
-    clearInterval(interval)
+    clearTimeout(timer)
 
     try {
       bodyError = JSON.parse(xhr.responseText).message
@@ -52,7 +54,7 @@ export default function(
   }
 
   xhr.onload = () => {
-    clearInterval(interval)
+    clearTimeout(timer)
     if (xhr.status === 200) {
       handleData()
       out.end()
@@ -73,7 +75,7 @@ export default function(
   }
   xhr.send(JSON.stringify(body))
 
-  interval = setInterval(handleData, CHECK_LIMIT_INTERVAL)
+  timer = setTimeout(handleData, CHECK_LIMIT_INTERVAL)
 
   return {
     stream: out,

@@ -29,7 +29,7 @@ function default_1(orgID, basePath, baseOptions, query, extern) {
     var xhr = new XMLHttpRequest();
     var rowCountIndex = 0;
     var row = '';
-    var interval = null;
+    var timer = null;
     var handleData = function () {
         for (var i = rowCountIndex; i < xhr.responseText.length; i++) {
             row += xhr.responseText[i];
@@ -38,10 +38,11 @@ function default_1(orgID, basePath, baseOptions, query, extern) {
                 row = '';
             }
         }
+        timer = setTimeout(handleData, CHECK_LIMIT_INTERVAL);
     };
     var handleError = function () {
         var bodyError = null;
-        clearInterval(interval);
+        clearTimeout(timer);
         try {
             bodyError = JSON.parse(xhr.responseText).message;
         }
@@ -55,7 +56,7 @@ function default_1(orgID, basePath, baseOptions, query, extern) {
         out.emit('error', err);
     };
     xhr.onload = function () {
-        clearInterval(interval);
+        clearTimeout(timer);
         if (xhr.status === 200) {
             handleData();
             out.end();
@@ -73,7 +74,7 @@ function default_1(orgID, basePath, baseOptions, query, extern) {
         xhr.setRequestHeader('Authorization', baseOptions.headers.Authorization);
     }
     xhr.send(JSON.stringify(body));
-    interval = setInterval(handleData, CHECK_LIMIT_INTERVAL);
+    timer = setTimeout(handleData, CHECK_LIMIT_INTERVAL);
     return {
         stream: out,
         cancel: function () {
